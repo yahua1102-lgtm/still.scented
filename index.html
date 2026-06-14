@@ -72,15 +72,15 @@ body.suc-open { overflow: hidden; }
 
 .ig-float {
   position: fixed;
-  right: 28px;
-  bottom: 28px;
+  right: 1.5rem;
+  bottom: 1.5rem;
   z-index: 120;
   width: 56px;
   height: 56px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.62);
+  /* border: 1px solid rgba(255, 255, 255, 0.62); */
   border-radius: 50%;
   background:
     radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
@@ -334,18 +334,22 @@ nav.s .n-btn { color: #2C2018; border-color: #C4A87A; }
 .ff { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
 .ff label { font-size: 1rem; letter-spacing: 0.26em; text-transform: uppercase; color: #3a2a0f; }
 .ff input,
-#bankAcc {
+#bankAcc,
+#storeName {
   background: transparent; border: none; border-bottom: 1px solid #D8D0C4;
   padding: 10px 0;  font-weight: 400;
   font-size: 1rem; color: #2C2018; outline: none; width: 100%;
   transition: border-color 0.2s; -webkit-appearance: none; border-radius: 0;
 }
 .ff input:focus,
-#bankAcc:focus { border-bottom-color: #C4A87A; }
+#bankAcc:focus,
+#storeName:focus { border-bottom-color: #C4A87A; }
 .ff input::placeholder,
-#bankAcc::placeholder { color: #C8C0B4; font-size: 0.8rem; }
+#bankAcc::placeholder,
+#storeName::placeholder { color: #C8C0B4; font-size: 0.8rem; }
 .ff.err input { border-bottom-color: #b05858; }
-.frow.err #bankAcc { border-bottom-color: #b05858; }
+.frow.err #bankAcc,
+.frow.err #storeName { border-bottom-color: #b05858; }
 .fe { display: none; }
 .ff.err .fe { display: block; font-size: 1rem; }
 
@@ -484,10 +488,18 @@ footer {
 }
 .sd-total {
   display: flex; justify-content: space-between; gap: 20px;
-  padding: 24px 0 30px;
+  padding: 12px 0 30px;
   color: #2C2018; font-size: 1.08rem; letter-spacing: 0.05em;
+  border-top: 1px solid #D8D0C4;
+  margin-top: 10px;
 }
 .sd-total span:last-child { color: #8A6B3F; font-size: 1.2rem; }
+.sd-total-line {
+  display: flex; justify-content: space-between; gap: 20px;
+  padding: 8px 0;
+  color: #6F5A3B; font-size: 0.98rem; letter-spacing: 0.05em;
+}
+.sd-total-line:first-of-type { padding-top: 22px; }
 .sd-delivery {
   display: flex; justify-content: space-between; gap: 20px;
   padding: 22px 0;
@@ -518,8 +530,12 @@ footer {
 .sd-copy-btn:hover { background: #C4A87A; color: #2C2018; }
 #transferSection { display: none; margin: 12px 0 26px; }
 #transferSection.on { display: block; }
-#bankErr { margin-top: 8px; }
-#bankAcc {
+#storeSection { display: none; margin: 12px 0 26px; }
+#storeSection.on { display: block; }
+#bankErr,
+#storeErr { margin-top: 8px; }
+#bankAcc,
+#storeName {
   letter-spacing: 0.05em; box-sizing: border-box;
 }
 
@@ -683,26 +699,20 @@ footer {
       <p class="fsec-label">寄送方式</p>
       <div class="dgrid">
         <div class="dc">
-          <input type="radio" name="del" id="dm" value="面交">
+          <input type="radio" name="del" id="dm" value="面交" data-shipping="0">
           <label for="dm"><span class="d-icon">🤝</span><span class="d-nm">面交</span></label>
         </div>
         <div class="dc">
-          <input type="radio" name="del" id="dpm" value="匯款後面交">
+          <input type="radio" name="del" id="dpm" value="匯款後面交" data-shipping="0">
           <label for="dpm"><span class="d-icon">💳</span><span class="d-nm">匯款後面交</span></label>
         </div>
         <div class="dc">
-          <input type="radio" name="del" id="dps" value="匯款後寄送">
-          <label for="dps"><span class="d-icon">📦</span><span class="d-nm">匯款後寄送</span></label>
+          <input type="radio" name="del" id="d7" value="匯款後 7-11 取貨" data-shipping="80" data-store="true">
+          <label for="d7"><span class="d-icon">🏪</span><span class="d-nm">匯款後 7-11 取貨</span></label>
         </div>
-        <div class="dc off">
-          <input type="radio" name="del" id="d7" value="7-11" disabled>
-          <label for="d7"><span class="d-icon">🏪</span><span class="d-nm">7-11</span></label>
-          <p class="off-tag">暫停開放</p>
-        </div>
-        <div class="dc off">
-          <input type="radio" name="del" id="df" value="全家" disabled>
-          <label for="df"><span class="d-icon">🏬</span><span class="d-nm">全家</span></label>
-          <p class="off-tag">暫停開放</p>
+        <div class="dc">
+          <input type="radio" name="del" id="df" value="匯款後全家取貨" data-shipping="80" data-store="true">
+          <label for="df"><span class="d-icon">🏬</span><span class="d-nm">匯款後全家取貨</span></label>
         </div>
       </div>
       <p class="berr" id="dErr">請選擇寄送方式</p>
@@ -736,6 +746,14 @@ footer {
       <div class="frow" id="fbank">
         <input type="text" id="bankAcc" inputmode="numeric" maxlength="5" placeholder="請輸入後五碼">
         <p class="berr" id="bankErr">請填寫匯出帳戶後五碼</p>
+      </div>
+    </div>
+
+    <div id="storeSection">
+      <p class="fsec-label">取貨門市</p>
+      <div class="frow" id="fstore">
+        <input type="text" id="storeName" placeholder="請輸入門市名稱，例如：7-11 中山門市">
+        <p class="berr" id="storeErr">請填寫取貨門市名稱</p>
       </div>
     </div>
 
@@ -775,6 +793,7 @@ footer {
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTkIRemMVOtqRshOQWLAamPwruNRgSKM_b_z2YuXYccQjDnNAaAHkQ7dALb0pOLXxEuQ/exec';
 const P = 500;
+const SHIPPING_FEE = 80;
 const qtys = {q1:0,q2:0,q3:0};
 const NM = {
   q1: { en: 'Santal Tea', zh: '伯爵茶檀香' },
@@ -782,11 +801,18 @@ const NM = {
   q3: { en: 'Fresh Calm', zh: '薄荷甜橙' }
 };
 
+const footerYear = document.querySelector('.f-txt');
+if (footerYear) footerYear.textContent = `© ${new Date().getFullYear()} Still · Taiwan`;
+
 window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('s',scrollY>60));
 
 // 電話欄位：只保留數字，並限制 10 碼
 document.getElementById('ip').addEventListener('input', function(){
   this.value = this.value.replace(/\D/g, '').slice(0, 10);
+});
+
+document.getElementById('bankAcc').addEventListener('input', function(){
+  this.value = this.value.replace(/\D/g, '').slice(0, 5);
 });
 
 document.querySelectorAll('[data-qty]').forEach((button) => {
@@ -796,7 +822,10 @@ document.querySelectorAll('[data-qty]').forEach((button) => {
 });
 
 document.querySelectorAll('input[name="del"]').forEach((input) => {
-  input.addEventListener('change', toggleTransfer);
+  input.addEventListener('change', () => {
+    toggleTransfer();
+    upSum();
+  });
 });
 
 document.getElementById('backHomeBtn').addEventListener('click', backHome);
@@ -816,13 +845,26 @@ function chQ(id,d){
   qtys[id]=v; document.getElementById(id).textContent=v; upSum();
 }
 
+function getSelectedDelivery(){
+  const input=document.querySelector('input[name="del"]:checked');
+  const shipping=input?Number(input.dataset.shipping||0):0;
+  return {
+    input,
+    shipping,
+    needsTransfer: input ? input.value !== '面交' : false,
+    needsStore: input ? input.dataset.store === 'true' : false
+  };
+}
+
 function upSum(){
   const t=qtys.q1+qtys.q2+qtys.q3;
   const b=document.getElementById('sumBox'), c=document.getElementById('sumCt');
   if(!t){b.classList.remove('on');return;} b.classList.add('on');
+  const shipping=getSelectedDelivery().shipping;
   let h='';
   ['q1','q2','q3'].forEach(k=>{ if(qtys[k]>0) h+=`<div class="srow"><span>${NM[k].en} ${NM[k].zh} × ${qtys[k]}</span><span class="sq">NT$ ${qtys[k]*P}</span></div>`; });
-  h+=`<div class="srow"><span>合計</span><span class="sq">NT$ ${t*P}</span></div>`;
+  if(shipping>0) h+=`<div class="srow"><span>運費</span><span class="sq">NT$ ${shipping}</span></div>`;
+  h+=`<div class="srow"><span>合計</span><span class="sq">NT$ ${t*P+shipping}</span></div>`;
   c.innerHTML=h;
 }
 
@@ -850,17 +892,25 @@ function resetOrderForm(){
   document.getElementById('in').value = '';
   document.getElementById('ip').value = '';
   document.getElementById('ie').value = '';
+  document.getElementById('bankAcc').value = '';
+  document.getElementById('storeName').value = '';
 
   const checkedDelivery = document.querySelector('input[name="del"]:checked');
   if (checkedDelivery) checkedDelivery.checked = false;
 
   document.getElementById('qErr').classList.remove('on');
   document.getElementById('dErr').classList.remove('on');
+  document.getElementById('bankErr').classList.remove('on');
+  document.getElementById('storeErr').classList.remove('on');
   document.getElementById('gErr').classList.remove('on');
 
   document.getElementById('fn').classList.remove('err');
   document.getElementById('fp').classList.remove('err');
   document.getElementById('fe2').classList.remove('err');
+  document.getElementById('fbank').classList.remove('err');
+  document.getElementById('fstore').classList.remove('err');
+  document.getElementById('transferSection').classList.remove('on');
+  document.getElementById('storeSection').classList.remove('on');
 }
 
 function backHome(){
@@ -930,13 +980,28 @@ function submitByHiddenIframe(payload){
 }
 
 function toggleTransfer(){
-  const del=document.querySelector('input[name="del"]:checked');
+  const delivery=getSelectedDelivery();
   const ts=document.getElementById('transferSection');
-  if(del&&(del.value==='匯款後面交'||del.value==='匯款後寄送')){
+  const ss=document.getElementById('storeSection');
+  const bankErr=document.getElementById('bankErr');
+  const bankField=document.getElementById('fbank');
+  const storeErr=document.getElementById('storeErr');
+  const storeField=document.getElementById('fstore');
+  if(delivery.needsTransfer){
     ts.classList.add('on');
   } else {
     ts.classList.remove('on');
     document.getElementById('bankAcc').value='';
+    bankErr.classList.remove('on');
+    bankField.classList.remove('err');
+  }
+  if(delivery.needsStore){
+    ss.classList.add('on');
+  } else {
+    ss.classList.remove('on');
+    document.getElementById('storeName').value='';
+    storeErr.classList.remove('on');
+    storeField.classList.remove('err');
   }
 }
 
@@ -944,9 +1009,12 @@ document.getElementById('orderForm').addEventListener('submit',async function(e)
   e.preventDefault(); let ok=true;
   const t=qtys.q1+qtys.q2+qtys.q3, qe=document.getElementById('qErr');
   t===0?(qe.classList.add('on'),ok=false):qe.classList.remove('on');
-  const del=document.querySelector('input[name="del"]:checked'), de=document.getElementById('dErr');
+  const delivery=getSelectedDelivery();
+  const del=delivery.input, de=document.getElementById('dErr');
   !del?(de.classList.add('on'),ok=false):de.classList.remove('on');
-  const needTransfer=del&&(del.value==='匯款後面交'||del.value==='匯款後寄送');
+  const needTransfer=delivery.needsTransfer;
+  const needStore=delivery.needsStore;
+  const shippingFee=delivery.shipping;
   const bankAcc=document.getElementById('bankAcc').value.trim();
   const bankErr=document.getElementById('bankErr');
   const bankField=document.getElementById('fbank');
@@ -955,6 +1023,15 @@ document.getElementById('orderForm').addEventListener('submit',async function(e)
   } else {
     bankErr&&bankErr.classList.remove('on');
     bankField.classList.remove('err');
+  }
+  const storeName=document.getElementById('storeName').value.trim();
+  const storeErr=document.getElementById('storeErr');
+  const storeField=document.getElementById('fstore');
+  if(needStore&&!storeName){
+    storeErr.classList.add('on'); storeField.classList.add('err'); ok=false;
+  } else {
+    storeErr.classList.remove('on');
+    storeField.classList.remove('err');
   }
   const name=document.getElementById('in').value.trim(), fn=document.getElementById('fn');
   !name?(fn.classList.add('err'),ok=false):fn.classList.remove('err');
@@ -974,6 +1051,8 @@ document.getElementById('orderForm').addEventListener('submit',async function(e)
   const orderDateKey = now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0');
   const orderTimeKey = String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0')+String(now.getSeconds()).padStart(2,'0');
   const orderId=`STILL-${orderDateKey}-${orderTimeKey}`;
+  const productAmount=t*P;
+  const totalAmount=productAmount+shippingFee;
   const payload={
     order_id:orderId,
     order_date:orderDate,
@@ -986,9 +1065,12 @@ document.getElementById('orderForm').addEventListener('submit',async function(e)
     soft_sleep:qtys.q2,
     fresh_calm:qtys.q3,
     total:t,
-    total_amount:t*P,
+    product_amount:productAmount,
+    shipping_fee:shippingFee,
+    total_amount:totalAmount,
     delivery:del.value,
-    bank_acc:bankAcc||''
+    bank_acc:bankAcc||'',
+    pickup_store:storeName||''
   };
   try{
     submitByHiddenIframe(payload);
@@ -1012,10 +1094,11 @@ document.getElementById('orderForm').addEventListener('submit',async function(e)
       請於 3 天內完成匯款<br>
       匯出後五碼：<strong>${bankAcc}</strong>
     </div>`:'';
+    const storeHTML=needStore?`<div class="sd-delivery"><span class="sd-label">取貨門市</span><span>${storeName}</span></div>`:'';
     document.getElementById('sucDet').innerHTML=`
       <div class="sd-head">
         <div class="sd-summary-title">訂單摘要</div>
-        <div class="sd-orderid">訂單編號 <span>${payload.order_id}</span><button type="button" class="sd-copy-btn sd-order-copy" data-copy="${payload.order_id}" data-label="複製訂單編號">複製訂單編號</button></div>
+        <div class="sd-orderid">訂單編號 <span>${payload.order_id}</span><button type="button" class="sd-copy-btn sd-order-copy" data-copy="${payload.order_id}" data-label="複製訂單編號">複製</button></div>
       </div>
       <div class="sd-meta-row">
         <div class="sd-meta">👤 ${name}</div>
@@ -1027,8 +1110,11 @@ document.getElementById('orderForm').addEventListener('submit',async function(e)
         <div class="sd-th-price">金額</div>
       </div>
       <div class="sd-items">${itemsHTML}</div>
-      <div class="sd-total"><span>總計</span><span>NT$ ${t*P}</span></div>
+      <div class="sd-total-line"><span>商品小計</span><span>NT$ ${productAmount}</span></div>
+      <div class="sd-total-line"><span>運費</span><span>NT$ ${shippingFee}</span></div>
+      <div class="sd-total"><span>總計</span><span>NT$ ${totalAmount}</span></div>
       <div class="sd-delivery"><span class="sd-label">寄送方式</span><span>${del.value}</span></div>
+      ${storeHTML}
       ${transferHTML}
     `;
 
